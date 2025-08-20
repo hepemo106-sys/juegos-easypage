@@ -5,102 +5,110 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>EasyPage Casino</title>
 <style>
-  body {
-    font-family: Arial, sans-serif;
-    background: linear-gradient(to right, #1f1c2c, #928dab);
-    color: #fff;
-    margin:0;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    min-height: 100vh;
-  }
+body {
+  font-family: Arial, sans-serif;
+  background: linear-gradient(to right, #1f1c2c, #928dab);
+  color: #fff;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-height: 100vh;
+}
 
-  header {
-    width: 100%;
-    background: #0f4c75;
-    padding: 15px 0;
-    display: flex;
-    justify-content: center;
-    gap: 20px;
-    font-size: 18px;
-    font-weight: bold;
-    cursor: pointer;
-  }
+header {
+  width: 100%;
+  background: #0f4c75;
+  padding: 15px 0;
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  font-size: 18px;
+  font-weight: bold;
+  cursor: pointer;
+}
 
-  header div:hover { color:#ff6b81; }
+header div:hover { color:#ff6b81; }
 
-  .game { display:none; margin-top:20px; text-align:center; }
+.game { display:none; margin-top:20px; text-align:center; }
 
-  h1 { margin-bottom:20px; }
+h1 { margin-bottom:20px; }
 
-  button {
-    padding: 12px 24px;
-    margin-top:10px;
-    font-size:18px;
-    border:none;
-    border-radius:8px;
-    cursor:pointer;
-    background: #ff6b81;
-    color:#fff;
-    transition: transform 0.2s, background 0.3s;
-  }
+button {
+  padding: 12px 24px;
+  margin-top:10px;
+  font-size:18px;
+  border:none;
+  border-radius:8px;
+  cursor:pointer;
+  background: #ff6b81;
+  color:#fff;
+  transition: transform 0.2s, background 0.3s;
+}
 
-  button:hover { transform: scale(1.05); background: #e43f5a; }
+button:hover { transform: scale(1.05); background: #e43f5a; }
 
-  #discordBtn { margin-top:15px; }
+#discordBtn { margin-top:15px; display:none; }
 
-  /* RUEDA */
-  .roulette-container {
-    position: relative;
-    width: 350px;
-    height: 350px;
-    margin:auto;
-  }
+/* RUEDA */
+.roulette-container {
+  position: relative;
+  width: 350px;
+  height: 350px;
+  margin:auto;
+}
 
-  .roulette-wheel {
-    width: 100%;
-    height: 100%;
-    border-radius: 50%;
-    border: 8px solid #fff;
-    position: relative;
-    transition: transform 4s cubic-bezier(0.33, 1, 0.68, 1);
-  }
+.roulette-wheel {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  border: 8px solid #fff;
+  position: relative;
+  transition: transform 5s cubic-bezier(0.33, 1, 0.68, 1);
+}
 
-  .segment {
-    position: absolute;
-    width: 50%;
-    height: 50%;
-    top: 0;
-    left: 50%;
-    transform-origin: 0% 100%;
-    border-radius: 0 100% 0 0;
-    text-align: right;
-    padding-right: 20px;
-    font-size: 24px;
-    line-height: 80px;
-    font-weight: bold;
-    color: #fff;
-    cursor: pointer;
-    transition: transform 0.2s;
-  }
+.segment {
+  position: absolute;
+  width: 50%;
+  height: 50%;
+  top: 0;
+  left: 50%;
+  transform-origin: 0% 100%;
+  border-radius: 0 100% 0 0;
+  text-align: right;
+  padding-right: 20px;
+  font-size: 24px;
+  line-height: 80px;
+  font-weight: bold;
+  color: #fff;
+  cursor: pointer;
+}
 
-  .segment:hover { transform: scale(1.1); }
+/* Flecha fija */
+.arrow {
+  position: absolute;
+  top: -10px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 40px;
+  color:#ffce00;
+}
 
-  /* TRAGAMONEDAS */
-  .slot-machine {
-    display:flex;
-    justify-content:center;
-    gap:10px;
-    font-size:50px;
-    margin-bottom:20px;
-  }
+/* TRAGAMONEDAS */
+.slot-machine {
+  display:flex;
+  justify-content:center;
+  gap:10px;
+  font-size:50px;
+  margin-bottom:20px;
+}
 
-  /* DADOS */
-  .dice {
-    font-size:80px;
-    margin-bottom:20px;
-  }
+/* DADOS */
+.dice {
+  font-size:80px;
+  margin-bottom:20px;
+  transition: transform 0.5s;
+}
 
 </style>
 </head>
@@ -117,6 +125,7 @@
 <!-- RUEDA -->
 <div id="rouletteGame" class="game">
   <div class="roulette-container">
+    <div class="arrow">⬆️</div>
     <div id="roulette" class="roulette-wheel">
       <div class="segment" style="transform:rotate(0deg); background:#e43f5a;">🍒</div>
       <div class="segment" style="transform:rotate(60deg); background:#ff6b81;">🍋</div>
@@ -155,7 +164,7 @@ function showGame(id){
   document.getElementById(id).style.display='block';
 }
 
-/* RUEDA */
+/* RUEDA MEJORADA */
 const roulette = document.getElementById('roulette');
 const spinBtn = document.getElementById('spinBtn');
 const discordBtn = document.getElementById('discordBtn');
@@ -174,41 +183,52 @@ spinBtn.addEventListener('click', () => {
     return;
   }
   spinBtn.disabled = true;
-  const deg = 720 + Math.floor(Math.random()*360);
+  const prizeIndex = Math.floor(Math.random()*6);
+  const deg = 3600 + (prizeIndex*60) + 30; // 3600 + rotación extra + mitad segmento
   roulette.style.transform = `rotate(${deg}deg)`;
-  const prizeIndex = Math.floor(((deg % 360)/60)) % 6;
   localStorage.setItem('lastSpin', new Date().getTime());
   setTimeout(()=>{
-    alert("🎉 Ganaste: " + prizes[5-prizeIndex]);
+    alert("🎉 Ganaste: " + prizes[prizeIndex]);
     discordBtn.style.display='inline-block';
-  },4000);
+    spinBtn.disabled=false;
+  },5000);
 });
 
-/* TRAGAMONEDAS */
+/* TRAGAMONEDAS ANIMADAS */
 const slotSymbols = ["🍒","🍋","🍊","⭐","🍇","💎"];
 function spinSlots(){
-  const s1 = slotSymbols[Math.floor(Math.random()*slotSymbols.length)];
-  const s2 = slotSymbols[Math.floor(Math.random()*slotSymbols.length)];
-  const s3 = slotSymbols[Math.floor(Math.random()*slotSymbols.length)];
-  document.getElementById('slot1').textContent = s1;
-  document.getElementById('slot2').textContent = s2;
-  document.getElementById('slot3').textContent = s3;
+  let rolls = [0,0,0];
+  let interval = setInterval(()=>{
+    rolls[0] = slotSymbols[Math.floor(Math.random()*slotSymbols.length)];
+    rolls[1] = slotSymbols[Math.floor(Math.random()*slotSymbols.length)];
+    rolls[2] = slotSymbols[Math.floor(Math.random()*slotSymbols.length)];
+    document.getElementById('slot1').textContent = rolls[0];
+    document.getElementById('slot2').textContent = rolls[1];
+    document.getElementById('slot3').textContent = rolls[2];
+  },100);
 
-  if(s1===s2 && s2===s3){
-    alert("🎉 Ganaste: " + s1);
-    discordBtn.style.display='inline-block';
-  }
+  setTimeout(()=>{
+    clearInterval(interval);
+    if(rolls[0]===rolls[1] && rolls[1]===rolls[2]){
+      alert("🎉 Ganaste: " + rolls[0]);
+      discordBtn.style.display='inline-block';
+    }
+  },1500);
 }
 
-/* DADOS */
+/* DADOS CON REBOTE */
 function rollDice(){
+  const diceDisplay = document.getElementById('diceDisplay');
+  diceDisplay.style.transform='translateY(-20px)';
+  setTimeout(()=>{ diceDisplay.style.transform='translateY(0px)'; },200);
   const d1 = Math.floor(Math.random()*6)+1;
   const d2 = Math.floor(Math.random()*6)+1;
   const diceFaces = ["","⚀","⚁","⚂","⚃","⚄","⚅"];
-  document.getElementById('diceDisplay').textContent = diceFaces[d1]+diceFaces[d2];
-  discordBtn.style.display='inline-block';
+  setTimeout(()=>{
+    diceDisplay.textContent = diceFaces[d1]+diceFaces[d2];
+    discordBtn.style.display='inline-block';
+  },250);
 }
-
 </script>
 
 </body>
