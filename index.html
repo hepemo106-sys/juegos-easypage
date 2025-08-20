@@ -3,186 +3,131 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>EasyPage Casino</title>
+<title>EasyPage Ruleta</title>
 <style>
-  body { font-family: Arial, sans-serif; margin:0; padding:0; background:#1a1a2e; color:#fff;}
-  header { background:#162447; padding:10px 20px; display:flex; justify-content:space-between; align-items:center;}
-  header h1 { margin:0; color:#e43f5a;}
-  nav a { margin:0 10px; color:#fff; text-decoration:none; font-weight:bold;}
-  nav a:hover { color:#e43f5a; }
-  .container { padding:20px; max-width:900px; margin:auto;}
-  .game-section { display:none; margin-top:20px; text-align:center;}
-  button { padding:10px 20px; background:#e43f5a; border:none; color:#fff; font-weight:bold; cursor:pointer; border-radius:5px; margin-top:10px;}
-  button:hover { background:#ff6b81;}
-  #discord-btn { position:fixed; bottom:20px; right:20px; background:#7289da; border-radius:50px; padding:15px 25px; font-size:16px; }
-  .roulette-wheel { width:300px; height:300px; border-radius:50%; border:10px solid #e43f5a; margin:auto; position:relative; overflow:hidden;}
-  .roulette-segment { position:absolute; width:50%; height:50%; background:transparent; transform-origin:100% 100%; text-align:right; padding-right:10px; font-weight:bold;}
-  .slot-container { display:flex; justify-content:center; margin-top:20px; }
-  .slot { width:60px; height:60px; margin:0 5px; background:#fff; color:#000; display:flex; align-items:center; justify-content:center; font-weight:bold; border-radius:5px; font-size:20px; }
+  body {
+    font-family: Arial, sans-serif;
+    background: linear-gradient(to right, #1f1c2c, #928dab);
+    color: #fff;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    margin:0;
+  }
+
+  h1 { margin-bottom: 20px; }
+
+  .roulette-container {
+    position: relative;
+    width: 400px;
+    height: 400px;
+    margin-bottom: 20px;
+  }
+
+  .roulette-wheel {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    border: 8px solid #fff;
+    position: relative;
+    transition: transform 4s cubic-bezier(0.33, 1, 0.68, 1);
+  }
+
+  .segment {
+    position: absolute;
+    width: 50%;
+    height: 50%;
+    top: 0;
+    left: 50%;
+    transform-origin: 0% 100%;
+    border-radius: 0 100% 0 0;
+    text-align: right;
+    padding-right: 20px;
+    font-size: 24px;
+    line-height: 80px;
+    font-weight: bold;
+    color: #fff;
+    cursor: pointer;
+    transition: transform 0.2s;
+  }
+
+  .segment:hover {
+    transform: scale(1.1);
+  }
+
+  #spinBtn, #discordBtn {
+    padding: 12px 24px;
+    margin-top: 10px;
+    font-size: 18px;
+    border:none;
+    border-radius: 8px;
+    cursor:pointer;
+    background: #ff6b81;
+    color:#fff;
+    transition: transform 0.2s, background 0.3s;
+  }
+
+  #spinBtn:hover, #discordBtn:hover {
+    transform: scale(1.05);
+    background: #e43f5a;
+  }
+
+  #discordBtn { display:none; margin-top:15px; }
 </style>
 </head>
 <body>
 
-<header>
-  <h1>EasyPage</h1>
-  <nav>
-    <a href="#" onclick="showGame('inicio')">Inicio</a>
-    <a href="#" onclick="showGame('ruleta')">🎡 Ruleta</a>
-    <a href="#" onclick="showGame('slots')">🎰 Slots</a>
-    <a href="#" onclick="showGame('quiz')">❓ Quiz</a>
-  </nav>
-</header>
+<h1>🎰 EasyPage Ruleta 🎰</h1>
 
-<div class="container">
-
-  <div id="inicio" class="game-section" style="display:block;">
-    <h2>Bienvenido a EasyPage Casino!</h2>
-    <p>Juega y gana premios reales para tu página web. Luego reclámalos directo en nuestro canal de Discord.</p>
+<div class="roulette-container">
+  <div id="roulette" class="roulette-wheel">
+    <div class="segment" style="transform:rotate(0deg); background:#e43f5a;">🍒</div>
+    <div class="segment" style="transform:rotate(60deg); background:#ff6b81;">🍋</div>
+    <div class="segment" style="transform:rotate(120deg); background:#f7b32b;">🍊</div>
+    <div class="segment" style="transform:rotate(180deg); background:#6a2c70;">⭐</div>
+    <div class="segment" style="transform:rotate(240deg); background:#1b262c;">🍇</div>
+    <div class="segment" style="transform:rotate(300deg); background:#0f4c75;">💎</div>
   </div>
-
-  <!-- Ruleta -->
-  <div id="ruleta" class="game-section">
-    <h2>🎡 Ruleta de la Suerte</h2>
-    <div class="roulette-wheel" id="roulette-wheel"></div>
-    <button id="spin-roulette-btn">Girar Ruleta</button>
-    <p id="roulette-result"></p>
-    <button id="claim-roulette" style="display:none;" onclick="claimPrize()">Reclamar Premio en Discord</button>
-  </div>
-
-  <!-- Slots -->
-  <div id="slots" class="game-section">
-    <h2>🎰 Slots Ganadoras</h2>
-    <div class="slot-container">
-      <div class="slot" id="slot1">🍒</div>
-      <div class="slot" id="slot2">🍋</div>
-      <div class="slot" id="slot3">🍊</div>
-    </div>
-    <button id="spin-slots-btn">Jugar Slots</button>
-    <p id="slots-result"></p>
-    <button id="claim-slots" style="display:none;" onclick="claimPrize()">Reclamar Premio en Discord</button>
-  </div>
-
-  <!-- Quiz -->
-  <div id="quiz" class="game-section">
-    <h2>❓ Quiz: ¿Qué web necesitas?</h2>
-    <div id="quiz-questions">
-      <p>Pregunta 1: ¿Qué tipo de web quieres? (Landing, Tienda, Portafolio)</p>
-      <select id="q1">
-        <option value="Landing">Landing</option>
-        <option value="Tienda">Tienda</option>
-        <option value="Portafolio">Portafolio</option>
-      </select>
-      <p>Pregunta 2: ¿Tiempo de entrega preferido? (24h, 48h, 72h)</p>
-      <select id="q2">
-        <option value="24h">24h</option>
-        <option value="48h">48h</option>
-        <option value="72h">72h</option>
-      </select>
-      <br><br>
-      <button id="finish-quiz-btn">Ver Resultado</button>
-    </div>
-    <p id="quiz-result"></p>
-    <button id="claim-quiz" style="display:none;" onclick="claimPrize()">Reclamar Premio en Discord</button>
-  </div>
-
 </div>
 
-<a id="discord-btn" href="https://discord.gg/TU-LINK-AQUI" target="_blank">💬 Reclamar en Discord</a>
+<button id="spinBtn">🎡 Girar Ruleta</button>
+<button id="discordBtn" onclick="window.open('https://discord.com/users/TU_ID', '_blank')">💬 Contactar por Discord</button>
 
 <script>
-function showGame(id) {
-  const sections = document.querySelectorAll('.game-section');
-  sections.forEach(sec => sec.style.display='none');
-  document.getElementById(id).style.display='block';
+const roulette = document.getElementById('roulette');
+const spinBtn = document.getElementById('spinBtn');
+const discordBtn = document.getElementById('discordBtn');
+
+const prizes = ["🍒 Premio 1", "🍋 Premio 2", "🍊 Premio 3", "⭐ Premio 4", "🍇 Premio 5", "💎 Premio 6"];
+
+function canSpin() {
+  const lastSpin = localStorage.getItem('lastSpin');
+  if(!lastSpin) return true;
+  const now = new Date().getTime();
+  return (now - lastSpin) > 24*60*60*1000; // 24h
 }
 
-// Premios posibles
-const prizes = ["10% de descuento", "Entrega express 24h", "1 mes de mantenimiento gratis"];
-
-// Restricciones diarias
-function canPlay(key) {
-  const last = localStorage.getItem(key);
-  const today = new Date().toDateString();
-  return last !== today;
-}
-function setPlayedToday(key) {
-  const today = new Date().toDateString();
-  localStorage.setItem(key, today);
-}
-
-// --- Ruleta animada ---
-function spinRoulette() {
-  if(!canPlay('roulette')) {
-    alert("Ya jugaste hoy en la ruleta, vuelve mañana.");
+spinBtn.addEventListener('click', () => {
+  if(!canSpin()){
+    alert("⏳ Solo puedes girar 1 vez por día. Vuelve mañana!");
     return;
   }
-  setPlayedToday('roulette');
-  const wheel = document.getElementById('roulette-wheel');
-  const prize = prizes[Math.floor(Math.random()*prizes.length)];
-  const degree = 720 + Math.random()*360; // rotación aleatoria
-  wheel.style.transition = 'transform 3s ease-out';
-  wheel.style.transform = `rotate(${degree}deg)`;
+
+  spinBtn.disabled = true;
+
+  const deg = 720 + Math.floor(Math.random()*360);
+  roulette.style.transform = `rotate(${deg}deg)`;
+
+  const prizeIndex = Math.floor(((deg % 360)/60)) % 6;
+  localStorage.setItem('lastSpin', new Date().getTime());
+
   setTimeout(()=>{
-    document.getElementById('roulette-result').innerText = `🎉 ¡Has ganado: ${prize}!`;
-    document.getElementById('claim-roulette').style.display='inline-block';
-    window.currentPrize = prize;
-  },3000);
-}
-
-// --- Slots animadas ---
-function spinSlots() {
-  if(!canPlay('slots')) {
-    alert("Ya jugaste hoy en slots, vuelve mañana.");
-    return;
-  }
-  setPlayedToday('slots');
-  const symbols = ["🍒","🍋","🍊","🍇","⭐"];
-  let result = [];
-  const slot1 = document.getElementById('slot1');
-  const slot2 = document.getElementById('slot2');
-  const slot3 = document.getElementById('slot3');
-
-  let count = 0;
-  const interval = setInterval(()=>{
-    slot1.innerText = symbols[Math.floor(Math.random()*symbols.length)];
-    slot2.innerText = symbols[Math.floor(Math.random()*symbols.length)];
-    slot3.innerText = symbols[Math.floor(Math.random()*symbols.length)];
-    count++;
-    if(count>20){
-      clearInterval(interval);
-      result = [slot1.innerText, slot2.innerText, slot3.innerText];
-      const prize = prizes[Math.floor(Math.random()*prizes.length)];
-      document.getElementById('slots-result').innerText = `🎉 ¡Has ganado: ${prize}!`;
-      document.getElementById('claim-slots').style.display='inline-block';
-      window.currentPrize = prize;
-    }
-  },100);
-}
-
-// --- Quiz ---
-function finishQuiz() {
-  if(!canPlay('quiz')) {
-    alert("Ya hiciste el quiz hoy, vuelve mañana.");
-    return;
-  }
-  setPlayedToday('quiz');
-  const q1 = document.getElementById('q1').value;
-  const q2 = document.getElementById('q2').value;
-  const result = `Tu web ideal: ${q1} con entrega en ${q2}`;
-  document.getElementById('quiz-result').innerText = result;
-  document.getElementById('claim-quiz').style.display='inline-block';
-  window.currentPrize = result;
-}
-
-// --- Botón reclamar Discord ---
-function claimPrize() {
-  window.open('https://discord.gg/TU-LINK-AQUI', '_blank');
-}
-
-// Event listeners
-document.getElementById('spin-roulette-btn').addEventListener('click', spinRoulette);
-document.getElementById('spin-slots-btn').addEventListener('click', spinSlots);
-document.getElementById('finish-quiz-btn').addEventListener('click', finishQuiz);
+    alert("🎉 Ganaste: " + prizes[5-prizeIndex]);
+    discordBtn.style.display = 'inline-block';
+  },4000);
+});
 </script>
 
 </body>
