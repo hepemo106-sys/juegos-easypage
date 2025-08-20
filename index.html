@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EasyPage Casino</title>
+<style>
+  body { font-family: Arial, sans-serif; margin:0; padding:0; background: #1a1a2e; color: #fff;}
+  header { background: #162447; padding: 10px 20px; display: flex; align-items: center; justify-content: space-between;}
+  header h1 { margin:0; color:#e43f5a;}
+  nav a { margin: 0 10px; color:#fff; text-decoration:none; font-weight:bold;}
+  nav a:hover { color:#e43f5a; }
+  .container { padding: 20px; max-width: 900px; margin:auto;}
+  .game-section { display:none; margin-top:20px; }
+  button { padding:10px 20px; background:#e43f5a; border:none; color:#fff; font-weight:bold; cursor:pointer; border-radius:5px;}
+  button:hover { background:#ff6b81;}
+  #discord-btn { position: fixed; bottom:20px; right:20px; background:#7289da; border-radius:50px; padding:15px 25px; font-size:16px; }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>EasyPage</h1>
+  <nav>
+    <a href="#" onclick="showGame('inicio')">Inicio</a>
+    <a href="#" onclick="showGame('ruleta')">🎡 Ruleta</a>
+    <a href="#" onclick="showGame('slots')">🎰 Slots</a>
+    <a href="#" onclick="showGame('quiz')">❓ Quiz</a>
+  </nav>
+</header>
+
+<div class="container">
+
+  <div id="inicio" class="game-section" style="display:block;">
+    <h2>Bienvenido a EasyPage Casino!</h2>
+    <p>Juega y gana premios reales para tu página web. Luego reclámalos directo en nuestro canal de Discord.</p>
+  </div>
+
+  <!-- Ruleta -->
+  <div id="ruleta" class="game-section">
+    <h2>🎡 Ruleta de la Suerte</h2>
+    <p>Haz girar la ruleta y descubre tu premio:</p>
+    <button onclick="spinRoulette()">Girar Ruleta</button>
+    <p id="roulette-result"></p>
+    <button id="claim-roulette" style="display:none;" onclick="claimPrize()">Reclamar Premio en Discord</button>
+  </div>
+
+  <!-- Slots -->
+  <div id="slots" class="game-section">
+    <h2>🎰 Slots Ganadoras</h2>
+    <p>Pulsa el botón y mira qué premio obtienes:</p>
+    <button onclick="spinSlots()">Jugar Slots</button>
+    <p id="slots-result"></p>
+    <button id="claim-slots" style="display:none;" onclick="claimPrize()">Reclamar Premio en Discord</button>
+  </div>
+
+  <!-- Quiz -->
+  <div id="quiz" class="game-section">
+    <h2>❓ Quiz: ¿Qué web necesitas?</h2>
+    <p>Responde y descubre tu web ideal:</p>
+    <div id="quiz-questions">
+      <p>Pregunta 1: ¿Qué tipo de web quieres? (Landing, Tienda, Portafolio)</p>
+      <select id="q1">
+        <option value="Landing">Landing</option>
+        <option value="Tienda">Tienda</option>
+        <option value="Portafolio">Portafolio</option>
+      </select>
+      <p>Pregunta 2: ¿Tiempo de entrega preferido? (24h, 48h, 72h)</p>
+      <select id="q2">
+        <option value="24h">24h</option>
+        <option value="48h">48h</option>
+        <option value="72h">72h</option>
+      </select>
+      <br><br>
+      <button onclick="finishQuiz()">Ver Resultado</button>
+    </div>
+    <p id="quiz-result"></p>
+    <button id="claim-quiz" style="display:none;" onclick="claimPrize()">Reclamar Premio en Discord</button>
+  </div>
+
+</div>
+
+<a id="discord-btn" href="https://discord.gg/TU-LINK-AQUI" target="_blank">💬 Reclamar en Discord</a>
+
+<script>
+function showGame(id) {
+  const sections = document.querySelectorAll('.game-section');
+  sections.forEach(sec => sec.style.display='none');
+  document.getElementById(id).style.display='block';
+}
+
+// Premios posibles
+const prizes = ["10% de descuento", "Entrega express 24h", "1 mes de mantenimiento gratis"];
+
+// Ruleta
+function spinRoulette() {
+  const prize = prizes[Math.floor(Math.random()*prizes.length)];
+  document.getElementById('roulette-result').innerText = `🎉 ¡Has ganado: ${prize}!`;
+  document.getElementById('claim-roulette').style.display='inline-block';
+  window.currentPrize = prize;
+}
+
+// Slots
+function spinSlots() {
+  const prize = prizes[Math.floor(Math.random()*prizes.length)];
+  document.getElementById('slots-result').innerText = `🎉 ¡Has ganado: ${prize}!`;
+  document.getElementById('claim-slots').style.display='inline-block';
+  window.currentPrize = prize;
+}
+
+// Quiz
+function finishQuiz() {
+  const q1 = document.getElementById('q1').value;
+  const q2 = document.getElementById('q2').value;
+  const result = `Tu web ideal: ${q1} con entrega en ${q2}`;
+  document.getElementById('quiz-result').innerText = result;
+  document.getElementById('claim-quiz').style.display='inline-block';
+  window.currentPrize = result;
+}
+
+// Botón general para reclamar
+function claimPrize() {
+  // Lleva al canal #premios directamente
+  window.open('https://discord.gg/TU-LINK-AQUI', '_blank');
+}
+</script>
+
+</body>
+</html>
