@@ -3,27 +3,59 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>EasyPage Ruleta</title>
+<title>EasyPage Casino</title>
 <style>
   body {
     font-family: Arial, sans-serif;
     background: linear-gradient(to right, #1f1c2c, #928dab);
     color: #fff;
+    margin:0;
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
     min-height: 100vh;
-    margin:0;
   }
 
-  h1 { margin-bottom: 20px; }
+  header {
+    width: 100%;
+    background: #0f4c75;
+    padding: 15px 0;
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    font-size: 18px;
+    font-weight: bold;
+    cursor: pointer;
+  }
 
+  header div:hover { color:#ff6b81; }
+
+  .game { display:none; margin-top:20px; text-align:center; }
+
+  h1 { margin-bottom:20px; }
+
+  button {
+    padding: 12px 24px;
+    margin-top:10px;
+    font-size:18px;
+    border:none;
+    border-radius:8px;
+    cursor:pointer;
+    background: #ff6b81;
+    color:#fff;
+    transition: transform 0.2s, background 0.3s;
+  }
+
+  button:hover { transform: scale(1.05); background: #e43f5a; }
+
+  #discordBtn { margin-top:15px; }
+
+  /* RUEDA */
   .roulette-container {
     position: relative;
-    width: 400px;
-    height: 400px;
-    margin-bottom: 20px;
+    width: 350px;
+    height: 350px;
+    margin:auto;
   }
 
   .roulette-wheel {
@@ -53,81 +85,130 @@
     transition: transform 0.2s;
   }
 
-  .segment:hover {
-    transform: scale(1.1);
+  .segment:hover { transform: scale(1.1); }
+
+  /* TRAGAMONEDAS */
+  .slot-machine {
+    display:flex;
+    justify-content:center;
+    gap:10px;
+    font-size:50px;
+    margin-bottom:20px;
   }
 
-  #spinBtn, #discordBtn {
-    padding: 12px 24px;
-    margin-top: 10px;
-    font-size: 18px;
-    border:none;
-    border-radius: 8px;
-    cursor:pointer;
-    background: #ff6b81;
-    color:#fff;
-    transition: transform 0.2s, background 0.3s;
+  /* DADOS */
+  .dice {
+    font-size:80px;
+    margin-bottom:20px;
   }
 
-  #spinBtn:hover, #discordBtn:hover {
-    transform: scale(1.05);
-    background: #e43f5a;
-  }
-
-  #discordBtn { display:none; margin-top:15px; }
 </style>
 </head>
 <body>
 
-<h1>🎰 EasyPage Ruleta 🎰</h1>
+<h1>🎰 EasyPage Casino 🎰</h1>
 
-<div class="roulette-container">
-  <div id="roulette" class="roulette-wheel">
-    <div class="segment" style="transform:rotate(0deg); background:#e43f5a;">🍒</div>
-    <div class="segment" style="transform:rotate(60deg); background:#ff6b81;">🍋</div>
-    <div class="segment" style="transform:rotate(120deg); background:#f7b32b;">🍊</div>
-    <div class="segment" style="transform:rotate(180deg); background:#6a2c70;">⭐</div>
-    <div class="segment" style="transform:rotate(240deg); background:#1b262c;">🍇</div>
-    <div class="segment" style="transform:rotate(300deg); background:#0f4c75;">💎</div>
+<header>
+  <div onclick="showGame('rouletteGame')">Ruleta</div>
+  <div onclick="showGame('slotsGame')">Tragamonedas</div>
+  <div onclick="showGame('diceGame')">Dados</div>
+</header>
+
+<!-- RUEDA -->
+<div id="rouletteGame" class="game">
+  <div class="roulette-container">
+    <div id="roulette" class="roulette-wheel">
+      <div class="segment" style="transform:rotate(0deg); background:#e43f5a;">🍒</div>
+      <div class="segment" style="transform:rotate(60deg); background:#ff6b81;">🍋</div>
+      <div class="segment" style="transform:rotate(120deg); background:#f7b32b;">🍊</div>
+      <div class="segment" style="transform:rotate(180deg); background:#6a2c70;">⭐</div>
+      <div class="segment" style="transform:rotate(240deg); background:#1b262c;">🍇</div>
+      <div class="segment" style="transform:rotate(300deg); background:#0f4c75;">💎</div>
+    </div>
   </div>
+  <button id="spinBtn">🎡 Girar Ruleta</button>
 </div>
 
-<button id="spinBtn">🎡 Girar Ruleta</button>
-<button id="discordBtn" onclick="window.open('https://discord.com/users/TU_ID', '_blank')">💬 Contactar por Discord</button>
+<!-- TRAGAMONEDAS -->
+<div id="slotsGame" class="game">
+  <div class="slot-machine">
+    <div id="slot1">🍒</div>
+    <div id="slot2">🍋</div>
+    <div id="slot3">🍊</div>
+  </div>
+  <button onclick="spinSlots()">🎰 Girar Tragamonedas</button>
+</div>
+
+<!-- DADOS -->
+<div id="diceGame" class="game">
+  <div class="dice" id="diceDisplay">🎲🎲</div>
+  <button onclick="rollDice()">🎲 Tirar Dados</button>
+</div>
+
+<!-- BOTON DISCORD -->
+<button id="discordBtn" onclick="window.open('https://discord.com/users/TU_ID','_blank')">💬 Contactar por Discord</button>
 
 <script>
+/* Mostrar juego seleccionado */
+function showGame(id){
+  document.querySelectorAll('.game').forEach(g => g.style.display='none');
+  document.getElementById(id).style.display='block';
+}
+
+/* RUEDA */
 const roulette = document.getElementById('roulette');
 const spinBtn = document.getElementById('spinBtn');
 const discordBtn = document.getElementById('discordBtn');
-
 const prizes = ["🍒 Premio 1", "🍋 Premio 2", "🍊 Premio 3", "⭐ Premio 4", "🍇 Premio 5", "💎 Premio 6"];
 
 function canSpin() {
   const lastSpin = localStorage.getItem('lastSpin');
   if(!lastSpin) return true;
   const now = new Date().getTime();
-  return (now - lastSpin) > 24*60*60*1000; // 24h
+  return (now - lastSpin) > 24*60*60*1000;
 }
 
 spinBtn.addEventListener('click', () => {
   if(!canSpin()){
-    alert("⏳ Solo puedes girar 1 vez por día. Vuelve mañana!");
+    alert("⏳ Solo puedes girar 1 vez por día!");
     return;
   }
-
   spinBtn.disabled = true;
-
   const deg = 720 + Math.floor(Math.random()*360);
   roulette.style.transform = `rotate(${deg}deg)`;
-
   const prizeIndex = Math.floor(((deg % 360)/60)) % 6;
   localStorage.setItem('lastSpin', new Date().getTime());
-
   setTimeout(()=>{
     alert("🎉 Ganaste: " + prizes[5-prizeIndex]);
-    discordBtn.style.display = 'inline-block';
+    discordBtn.style.display='inline-block';
   },4000);
 });
+
+/* TRAGAMONEDAS */
+const slotSymbols = ["🍒","🍋","🍊","⭐","🍇","💎"];
+function spinSlots(){
+  const s1 = slotSymbols[Math.floor(Math.random()*slotSymbols.length)];
+  const s2 = slotSymbols[Math.floor(Math.random()*slotSymbols.length)];
+  const s3 = slotSymbols[Math.floor(Math.random()*slotSymbols.length)];
+  document.getElementById('slot1').textContent = s1;
+  document.getElementById('slot2').textContent = s2;
+  document.getElementById('slot3').textContent = s3;
+
+  if(s1===s2 && s2===s3){
+    alert("🎉 Ganaste: " + s1);
+    discordBtn.style.display='inline-block';
+  }
+}
+
+/* DADOS */
+function rollDice(){
+  const d1 = Math.floor(Math.random()*6)+1;
+  const d2 = Math.floor(Math.random()*6)+1;
+  const diceFaces = ["","⚀","⚁","⚂","⚃","⚄","⚅"];
+  document.getElementById('diceDisplay').textContent = diceFaces[d1]+diceFaces[d2];
+  discordBtn.style.display='inline-block';
+}
+
 </script>
 
 </body>
